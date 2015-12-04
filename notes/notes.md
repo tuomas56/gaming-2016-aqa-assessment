@@ -23,3 +23,8 @@
 * Tell the user if they were successful.
 	* Using sguigee - labels, textboxes, show_message
 	* Using console - ```print```
+
+#Solutions
+
+```soln1.py``` contains a solution written using Sguigee.  
+```soln2.py``` contains a solution that uses the console.
