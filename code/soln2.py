@@ -15,6 +15,7 @@ NotValidException = Exception()
 #doing 'for ... in iterator:'
 #a list of them can be generated with 'list(iterator)'
 def chunks(l, n):
+#chunks(l:iterator[T], n:int) -> iterator[tuple[T]]
 #split a list into evenly sized chunks.
     for i in range(0, len(l), n):
         #iterate with a step of n
@@ -22,7 +23,8 @@ def chunks(l, n):
         #yield a block of length n
 
 #a function that gets user input, validates and processes it.
-def get(conv,prompt,error="Invalid input."):
+def get(conv, prompt, error="Invalid input."):
+#get(conv:callable(str) -> T, prompt:str, error:str) -> T
 #loop until the user inputs a valid string
     while True:
         try:
@@ -37,7 +39,7 @@ def get(conv,prompt,error="Invalid input."):
             #if the conversion function errors, print the error message and loop
 
 #displays and gets a choice from menu options
-def menu(options,prompt="Please choose an option: "):
+def menu(options:list, prompt:str="Please choose an option: ") -> int:
     print(prompt)
     #print the options like this
     #   1) OPTION
@@ -57,12 +59,12 @@ def menu(options,prompt="Please choose an option: "):
     return get(validate,"Please enter an option [1-"+str(len(options))+"]: ") - 1
     #subtract 1 so that the option index starts at zero.
 
-def nl(n=1):
+def nl(n:int=1) -> None:
 #print n newlines
 	print('\n'*(n-1))
 	#print automatically ends with a newline so we print n - 1 \n characters
 
-def load_words(extended=False):
+def load_words(extended:bool=False) -> list:
 	with open("WordsExt.txt" if extended else "Words.txt") as f:
 	#open a different file depending on whether or not we're using extended mode
 		return list(map(str.strip, f.read().split("\n")))[:-1]
@@ -70,8 +72,8 @@ def load_words(extended=False):
 		#and call 'str.strip' on each of them. This removes extra spaces, etc.
 		#then ditch the last element '[:-1]' because it is an empty line.
 
-def ask_with_retry(prompt, correct):
-#ask for a five letter word, giving the user three guesses.
+def ask_with_retry(prompt:str, correct:str) -> bool:
+#ask for a five letter word, giving the user three guesses to get 'correct'.
 	prompt += ' You have %s guesses remaining: '
 	def validate(s):
 	#the validation function for 'get'
@@ -89,13 +91,13 @@ def ask_with_retry(prompt, correct):
 			return True
 	return False
 
-def draw_grid(words, size):
+def draw_grid(words:list, size:int) -> None:
 #draw a grid from 'words' with 'size' rows
 #it will draw as many words per row as needed
 	for row in chunks(words, size):
 		print(' '.join(row))
 
-def clear_screen():
+def clear_screen() -> None:
 	if WE_ARE_RUNNING_IN_IDLE:
 		print('\n'*60)
 		#the average IDLE terminal is probably about 60 chars high.
@@ -103,7 +105,7 @@ def clear_screen():
 		print(chr(27) + '[2J')
 		#the ANSI control code for clear screen.
 
-def end_game(guessed_removed, guessed_replaced, removed, replaced):
+def end_game(guessed_removed:bool, guessed_replaced:bool, removed:str, replaced:str) -> None:
 	if guessed_removed:
 		print('You remembered which word was removed correctly!')
 	else:
@@ -118,7 +120,7 @@ def end_game(guessed_removed, guessed_replaced, removed, replaced):
 	#we can add guessed_replaced and guessed_removed because bool is a subclass of int.
 	#i.e) True == 1 and False == 0
 
-def play_game(words, size):
+def play_game(words:list, size:int) -> int:
 #since both normal and extended are very similar, we just create a function
 #which takes a grid size argument. This is passed to the grid drawing, which
 #is the only different part
@@ -158,7 +160,7 @@ def play_game(words, size):
 	return main_menu()
 
 
-def main_menu():
+def main_menu() -> int:
 	choice = menu(['Normal Mode', 'Extended Mode', 'Exit'])
 	if choice == 2: #Exit
 		print("Goodbye!")
@@ -169,11 +171,11 @@ def main_menu():
 	elif choice == 1: #Extended Mode
 		return play_game(load_words(extended=True), 4)
 
-def main():
+def main() -> int:
 	print("Welcome to the Memory Game!")
 	#we don't do this inside the menu function because that is called again later.
 	nl()
-	main_menu()
+	return main_menu()
 
 if __name__ == "__main__":
 #if this module is not being imported.
